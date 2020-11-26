@@ -1,0 +1,23 @@
+{
+	"name": "smwcentral/validator",
+	"description": "SMW Central form validation library",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Telinc1",
+			"email": "telinc@telinc1.com",
+			"homepage": "https://telinc1.com"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"SMWCentral\\Validation\\": "src/"
+		}
+	},
+	"require": {
+		"php": "^7.3|^8.0",
+		"ext-json": "*",
+		"ext-mbstring": "*"
+	}
+}
