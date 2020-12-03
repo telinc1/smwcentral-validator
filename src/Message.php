@@ -4,11 +4,15 @@ namespace SMWCentral\Validation;
 
 use JsonSerializable;
 
-// FIXME
-use SMWCentral\Locale\Translator;
-
 class Message implements JsonSerializable
 {
+	/**
+	 * The resolver instance.
+	 * 
+	 * @var \SMWCentral\Validation\IMessageResolver|null
+	 */
+	public static $resolver = null;
+	
 	/**
 	 * The field that this message belongs to.
 	 * 
@@ -31,24 +35,17 @@ class Message implements JsonSerializable
 	protected $args;
 	
 	/**
-	 * FIXME
-	 */
-	protected $fallback;
-	
-	/**
 	 * Create a new message instance.
 	 * 
 	 * @param string $name
 	 * @param string $key
 	 * @param array $args
-	 * @param bool $fallback
 	 */
-	public function __construct(string $name, string $key, array $args = [], bool $fallback = true)
+	public function __construct(string $name, string $key, array $args = [])
 	{
 		$this->name = $name;
 		$this->key = $key;
 		$this->args = $args;
-		$this->fallback = true;
 	}
 	
 	/**
@@ -58,21 +55,12 @@ class Message implements JsonSerializable
 	 */
 	public function getTranslatedMessage(): string
 	{
-		$translator = Translator::get();
-		
-		$args = $this->args;
-		$args['title'] = $translator->translate(["form.{$this->name}.title", "form.{$this->name}"]);
-		
-		$key = "form.{$this->name}.{$this->key}";
-		
-		if(!$this->fallback)
+		if(self::$resolver === null)
 		{
-			return $translator->translate($key, null, $args);
+			self::$resolver = new DefaultMessageResolver();
 		}
 		
-		$message = $translator->translate($key, null, $args, null, false);
-		
-		return ($message === $key) ? $translator->translate("validation.{$this->key}", 'form', $args) : $message;
+		return self::$resolver->resolveMessage($this->name, $this->key, $this->args);
 	}
 	
 	/**
