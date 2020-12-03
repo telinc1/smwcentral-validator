@@ -2,12 +2,30 @@
 
 namespace SMWCentral\Validation;
 
+use Countable;
 use LogicException;
 
 class Variable
 {
+	/**
+	 * Process all rules.
+	 * 
+	 * @var string
+	 */
 	private const STATE_PROCESS = 'process';
+	
+	/**
+	 * Ignore rules if an error is added.
+	 * 
+	 * @var string
+	 */
 	private const STATE_BAIL = 'bail';
+	
+	/**
+	 * Ignore all rules.
+	 * 
+	 * @var string
+	 */
 	private const STATE_IGNORE = 'ignore';
 	
 	/**
@@ -65,14 +83,47 @@ class Variable
 	}
 	
 	/**
+	 * Determine if the given value is "blank".
+	 * 
+	 * Originally from:
+	 * https://github.com/laravel/framework/blob/b89363b/src/Illuminate/Support/helpers.php#L33
+	 * 
+	 * @param mixed $value
+	 * @return bool
+	 */
+	protected static function isBlank($value): bool
+	{
+		if($value === null)
+		{
+			return true;
+		}
+		
+		if(is_string($value))
+		{
+			return trim($value) === '';
+		}
+		
+		if(is_numeric($value) || is_bool($value))
+		{
+			return false;
+		}
+		
+		if($value instanceof Countable)
+		{
+			return count($value) === 0;
+		}
+		
+		return empty($value);
+	}
+	
+	/**
 	 * The value is required.
 	 * 
 	 * @return $this
 	 */
 	public function required(): Variable
 	{
-		// FIXME
-		if(blank($this->value))
+		if(self::isBlank($this->value))
 		{
 			$this->state = self::STATE_IGNORE;
 			$this->addError('required');
@@ -89,8 +140,7 @@ class Variable
 	 */
 	public function default($value): Variable
 	{
-		// FIXME
-		if(blank($this->value))
+		if(self::isBlank($this->value))
 		{
 			$this->value = $value;
 		}
