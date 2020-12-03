@@ -1,0 +1,20 @@
+name: Verify
+on: [push, pull_request]
+
+jobs:
+  verify:
+    if: "!contains(toJSON(github.event.commits[0].message), '[skip ci]')"
+    runs-on: ${{ matrix.os }}
+    name: PHP ${{ matrix.php }} on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        php: ['7.3', '7.4', '8.0']
+    steps:
+      - uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+      - run: composer install --no-progress --prefer-dist --optimize-autoloader
+      - run: vendor/bin/phpunit tests
