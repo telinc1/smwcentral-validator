@@ -5,6 +5,13 @@ namespace SMWCentral\Validation;
 class Validator
 {
 	/**
+	 * The token provider instance.
+	 * 
+	 * @var \SMWCentral\Validation\ITokenProvider|null
+	 */
+	public static $tokenProvider = null;
+	
+	/**
 	 * The array of input values.
 	 * 
 	 * @var array
@@ -38,10 +45,15 @@ class Validator
 	 */
 	public function passes(bool $expectToken = true): bool
 	{
-		// FIXME
-		if($expectToken && $this->getValue(self::TOKEN_NAME) !== token())
+		if($expectToken && self::$tokenProvider !== null)
 		{
-			$this->errors->add(self::TOKEN_NAME, new Message('token', 'token'));
+			$provider = self::$tokenProvider;
+			$key = $provider->getTokenKey($this);
+			
+			if($this->getValue($key) !== $provider->getTokenValue($this))
+			{
+				$this->errors->add($key, new Message($key, 'token'));
+			}
 		}
 		
 		return $this->errors->isEmpty();
