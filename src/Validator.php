@@ -38,6 +38,26 @@ class Validator
 	}
 	
 	/**
+	 * Set the Message Resolver and Token Provider instances.
+	 * 
+	 * @param \SMWCentral\Validation\IMessageResolver|null $messageResolver
+	 * @param \SMWCentral\Validation\ITokenProvider|null $tokenProvider
+	 * @return void
+	 */
+	public static function configure(?IMessageResolver $messageResolver, ?ITokenProvider $tokenProvider = null): void
+	{
+		if($messageResolver !== null)
+		{
+			Message::$resolver = $messageResolver;
+		}
+		
+		if($tokenProvider !== null)
+		{
+			self::$tokenProvider = $tokenProvider;
+		}
+	}
+	
+	/**
 	 * Check for validation errors.
 	 * 
 	 * @param bool $expectToken
