@@ -1,5 +1,9 @@
 # SMW Central Validator
 
+[![Latest Stable Version](https://img.shields.io/packagist/v/smwcentral/validator.svg)](https://packagist.org/packages/smwcentral/validator)
+[![GitHub Actions](https://img.shields.io/github/workflow/status/telinc1/smwcentral-validator/Verify)](https://github.com/telinc1/smwcentral-validator)
+[![License](https://img.shields.io/packagist/l/smwcentral/validator)](https://github.com/telinc1/smwcentral-validator/blob/master/LICENSE)
+
 The lightweight form validation component used by [SMW Central](https://www.smwcentral.net). Aims to provide a friendly and flexible API at a minimal runtime cost.
 
 * [Installation](#installation)
